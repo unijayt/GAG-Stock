@@ -16,7 +16,7 @@ const colors = {
   reset: '\x1b[0m'
 };
 
-const VERIFY_TOKEN = 'pagebot';
+const VERIFY_TOKEN = 'pagebot-v3';
 
 app.use(express.static(path.join(__dirname, 'Wala')));
 
