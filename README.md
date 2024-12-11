@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
 </head>
 
 <body>
@@ -82,6 +81,26 @@ npm install express body-parser fs axios
    - Ensure that the account used for testing has a role in the app.
 
 **Note:** The bot will only respond to accounts assigned specific roles within the app.
+
+## Step 10: Deploy Your Bot
+1. **Deployment Instructions:**
+   - Ensure your server is set up with Node.js.
+   - Deploy the app to your server or cloud platform (e.g., Heroku, Render, Vercel).
+
+2. **Run Your App:**
+   - Navigate to your project directory and install any additional dependencies:
+     ```bash
+     npm install
+     ```
+   - Start your server:
+     ```bash
+     node index.js
+     ```
+   - To ensure your server restarts when code changes, consider using `nodemon`:
+     ```bash
+     npm install -g nodemon
+     nodemon index.js
+     ```
 
 ## Adding Roles
 1. **Navigate to [developers.facebook.com](https://developers.facebook.com):**
