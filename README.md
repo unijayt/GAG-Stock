@@ -96,7 +96,7 @@ npm install express body-parser fs axios
      ```bash
      node index.js
      ```
-   - To ensure your server restarts when code changes, consider using `nodemon`:
+   - To ensure your server restarts when code changes, consider using `nodemon` (optional):
      ```bash
      npm install -g nodemon
      nodemon index.js
