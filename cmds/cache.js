@@ -25,7 +25,7 @@ module.exports = {
       const imageUrl = await extractImageUrl(event, authToken);
 
       if (imageUrl) {
-        // If an image is detected, use Gemini Vision API
+        
         const apiUrl = `https://kaiz-apis.gleeze.com/api/gemini-vision`;
         const response = await handleImageRecognition(apiUrl, userPrompt, imageUrl, senderId);
         const result = response.response;
@@ -33,7 +33,7 @@ module.exports = {
         const visionResponse = `🌌 𝐆𝐞𝐦𝐢𝐧𝐢 𝐀𝐧𝐚𝐥𝐲𝐬𝐢𝐬\n━━━━━━━━━━━━━━━━━━\n${result}`;
         sendLongMessage(bot, visionResponse, authToken);
       } else {
-        // If no image, use GPT API
+        
         const apiUrl = `https://rest-api-french2.onrender.com/api/clarencev2`;
         const response = await axios.get(apiUrl, {
           params: {
