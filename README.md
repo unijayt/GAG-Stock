@@ -121,6 +121,143 @@ npm install express body-parser fs axios
 6. **Assign Roles to Users:**
    - Assign the role to specific users by providing their name or user ID.
 
+# Creating a New Command for Your Bot
+
+This guide explains how to create a new command for your bot using the structure provided in the sample code. Each section of the command is explained below, including where to define specific logic and utilities.
+
+## Command File Structure
+
+### 1. **Import Dependencies**
+At the top of the file, import all required modules. For example:
+```javascript
+const axios = require("axios");
+const { sendMessage } = require('../handles/message');
+```
+- `axios`: Used for making API requests.
+- `sendMessage`: A utility function for sending messages.
+
+### 2. **Command Metadata**
+Define the metadata for the command, including its name, description, role, and author.
+```javascript
+module.exports = {
+  name: "ai",              // The command trigger name.
+  description: "Gpt4o x Gemini AI", // A brief description of what the command does.
+  role: 1,                 // Role-based access control (1 = accessible to all).
+  author: "Kiana",        // Author of the command.
+```
+
+### 3. **Main Function**
+Define the `execute` function, which contains the core logic of the command. This function should:
+- Validate inputs (e.g., `event.sender.id`, `args`).
+- Process user input or handle attachments (e.g., analyze images or text prompts).
+- Call external APIs and handle responses.
+
+Example:
+```javascript
+  async execute(bot, args, authToken, event) {
+    if (!event?.sender?.id) {
+      console.error('Invalid event object: Missing sender ID.');
+      sendMessage(bot, { text: 'Error: Missing sender ID.' }, authToken);
+      return;
+    }
+
+    const senderId = event.sender.id;
+    const userPrompt = args.join(" ");
+
+    if (!userPrompt && !event.message.reply_to?.mid) {
+      return sendMessage(bot, { text: "Please enter your question or reply with an image to analyze." }, authToken);
+    }
+
+    try {
+      // Core logic here...
+    } catch (error) {
+      console.error("Error in command execution:", error);
+      sendMessage(bot, { text: `Error: ${error.message || "Something went wrong."}` }, authToken);
+    }
+  }
+```
+
+### 4. **Helper Functions**
+Place utility functions below the main logic. These should handle specific tasks like:
+- Interacting with APIs.
+- Extracting image URLs.
+- Sending long messages.
+
+#### Example: Image Recognition Helper
+```javascript
+async function handleImageRecognition(apiUrl, prompt, imageUrl, senderId) {
+  try {
+    const { data } = await axios.get(apiUrl, {
+      params: {
+        q: prompt,
+        uid: senderId,
+        imageUrl: imageUrl || ""
+      }
+    });
+    return data;
+  } catch (error) {
+    throw new Error("Failed to connect to the Gemini Vision API.");
+  }
+}
+```
+
+#### Example: Extracting Image URLs
+```javascript
+async function extractImageUrl(event, authToken) {
+  try {
+    if (event.message.reply_to?.mid) {
+      return await getRepliedImage(event.message.reply_to.mid, authToken);
+    } else if (event.message?.attachments?.[0]?.type === 'image') {
+      return event.message.attachments[0].payload.url;
+    }
+  } catch (error) {
+    console.error("Failed to extract image URL:", error);
+  }
+  return "";
+}
+```
+
+#### Example: Sending Long Messages
+```javascript
+function sendLongMessage(bot, text, authToken) {
+  const maxMessageLength = 2000;
+  const delayBetweenMessages = 1000;
+
+  if (text.length > maxMessageLength) {
+    const messages = splitMessageIntoChunks(text, maxMessageLength);
+    sendMessage(bot, { text: messages[0] }, authToken);
+
+    messages.slice(1).forEach((message, index) => {
+      setTimeout(() => sendMessage(bot, { text: message }, authToken), (index + 1) * delayBetweenMessages);
+    });
+  } else {
+    sendMessage(bot, { text }, authToken);
+  }
+}
+
+function splitMessageIntoChunks(message, chunkSize) {
+  const regex = new RegExp(`.{1,${chunkSize}}`, 'g');
+  return message.match(regex);
+}
+```
+
+### 5. **Export Command**
+Export the entire module so it can be registered and used by the bot.
+```javascript
+};
+```
+
+## Notes
+- Use meaningful names for functions and variables.
+- Add error handling for all asynchronous tasks to ensure stability.
+- Place comments to describe the purpose of each block of code.
+- Test the command thoroughly before deploying it.
+
+## Example Command File
+Refer to the full example above for detailed implementation.
+
+
+
 ## Credits
 - This guide was created by Clarence, Kyle, Christel, and Akira.
 - Thanks to Deku (https://api.joshweb.click) for their APIs.
