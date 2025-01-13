@@ -1,5 +1,5 @@
 const axios = require("axios");
-const { sendMessage } = require('../handles/sendMessage');
+const { sendMessage } = require('../handles/message');
 
 module.exports = {
   name: "ai",
